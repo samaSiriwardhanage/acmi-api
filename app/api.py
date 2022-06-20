@@ -365,6 +365,9 @@ class XOSAPI():
             ) as exception:
                 print(f'ERROR: couldn\'t get {endpoint} with exception: {exception}... retrying')
                 retries += 1
+                if retries == 3:
+                    raise exception 
+
         return None
 
     def get_works(self):
