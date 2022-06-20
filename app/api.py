@@ -355,7 +355,7 @@ class XOSAPI():
         retries = 0
         while retries < 3:
             try:
-                response = requests.get(url=endpoint, params=params, timeout=30)
+                response = requests.get(url=endpoint, params=params, timeout=60)
                 response.raise_for_status()
                 return response
             except (
