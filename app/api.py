@@ -337,6 +337,7 @@ class XOSAPI():
     """
     XOS private API interface.
     """
+    retries = 0
     def __init__(self):
         self.uri = XOS_API_ENDPOINT
         self.params = {
@@ -350,9 +351,10 @@ class XOSAPI():
         Returns JSON for this resource.
         """
         endpoint = os.path.join(self.uri, f'{resource}/')
+        
         if not params:
             params = self.params.copy()
-        retries = 0
+        
         while retries < 3:
             try:
                 response = requests.get(url=endpoint, params=params, timeout=60)
@@ -367,7 +369,7 @@ class XOSAPI():
                 retries += 1
                 if retries == 3:
                     raise exception 
-                                      
+
         return None
 
     def get_works(self):
