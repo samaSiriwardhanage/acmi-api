@@ -40,6 +40,7 @@ ELASTICSEARCH_API_KEY_ID = os.getenv('ELASTICSEARCH_API_KEY_ID')
 INCLUDE_IMAGES = os.getenv('INCLUDE_IMAGES', 'false').lower() == 'true'
 INCLUDE_VIDEOS = os.getenv('INCLUDE_VIDEOS', 'false').lower() == 'true'
 INCLUDE_EXTERNAL = os.getenv('INCLUDE_EXTERNAL', 'false').lower() == 'true'
+XOS_RETRIES = 3
 
 application = Flask(__name__)
 api = Api(application)
@@ -337,7 +338,6 @@ class XOSAPI():
     """
     XOS private API interface.
     """
-    retries = 0
     def __init__(self):
         self.uri = XOS_API_ENDPOINT
         self.params = {
@@ -351,11 +351,10 @@ class XOSAPI():
         Returns JSON for this resource.
         """
         endpoint = os.path.join(self.uri, f'{resource}/')
-        
         if not params:
             params = self.params.copy()
-        
-        while retries < 3:
+        retries = 0
+        while retries < XOS_RETRIES:
             try:
                 response = requests.get(url=endpoint, params=params, timeout=60)
                 response.raise_for_status()
@@ -367,7 +366,7 @@ class XOSAPI():
             ) as exception:
                 print(f'ERROR: couldn\'t get {endpoint} with exception: {exception}... retrying')
                 retries += 1
-                if retries == 3:
+                if retries == XOS_RETRIES:
                     raise exception 
 
         return None
