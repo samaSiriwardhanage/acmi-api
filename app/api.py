@@ -367,7 +367,10 @@ class XOSAPI():
                 retries += 1
                 if retries == 3:
                     raise exception 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
         return None
 
     def get_works(self):
